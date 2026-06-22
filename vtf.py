@@ -43,7 +43,7 @@ class CreateVTFOptions:
     normal: NormalMapOptions = None
     compression_level: float = None #Range 0 to 1, default -1 for default compression level
     compression_method: COMPRESSION_METHOD = None
-    version: VERSION = None
+    version: VERSION = VERSION.DEFAULT
     platform: PLATFORM = None
     disable_mips: bool = False
 
@@ -83,11 +83,11 @@ class CreateVTFOptions:
             if self.normal.INVERT_GREEN:              cmd.extend(['--invert-green'])
             if self.normal.BUMPSCALE:                 cmd.extend(['--bumpscale', str(self.normal.BUMPSCALE)])
 
-        if self.compression_level:  cmd.extend(['--compression-level', str(self.compression_level)])
-        if self.compression_method: cmd.extend(['--compression-method', self.compression_method.name])
-        if self.version:            cmd.extend(['--version', self.version.value])
-        if self.disable_mips:       cmd.extend(['disable_mips'])
-        if self.filter:             cmd.extend(['--filter', self.filter.name])
+        if self.compression_level:          cmd.extend(['--compression-level', str(self.compression_level)])
+        if self.compression_method:         cmd.extend(['--compression-method', self.compression_method.name])
+        if self.version != VERSION.DEFAULT: cmd.extend(['--version', self.version.value])
+        if self.disable_mips:               cmd.extend(['disable_mips'])
+        if self.filter:                     cmd.extend(['--filter', self.filter.name])
 
         return cmd
 
