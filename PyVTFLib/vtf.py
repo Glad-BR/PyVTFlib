@@ -123,8 +123,8 @@ class ExtractVTFOptions:
 
         if self.output_path:           cmd.extend(['--output', str(self.output_path)])
         if self.skip_image:            cmd.extend(['--extract-skip-image'])
-        if self.file_format:           cmd.extend(['--extract-file-format', self.file_format])
-        if self.image_format:          cmd.extend(['--extract-image-format', self.image_format])
+        if self.file_format:           cmd.extend(['--extract-file-format', self.file_format.name])
+        if self.image_format:          cmd.extend(['--extract-image-format', self.image_format.name])
         if self.extract_alpha_channel: cmd.extend(['--extract-alpha-channel'])
         if self.extract_all_mips:      cmd.extend(['--extract-all-mips'])
         if self.extract_all_frames:    cmd.extend(['--extract-all-frames'])

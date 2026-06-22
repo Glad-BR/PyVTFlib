@@ -1,7 +1,3 @@
-
-
-
-
 from PyVTFLib import (
     VTF_FLAG as FLAG,
     CreateVTFOptions,
@@ -23,10 +19,9 @@ from pathlib import Path
 
 
 test = Path('tests')
-example_img = test/'test.jpg'
+example_img = test/'test.png'
 example_vtf = test/'output.vtf'
-
-
+example_extract = test/'extract.png'
 
 # Super Simple VTF creation
 options = CreateVTFOptions(
@@ -35,6 +30,12 @@ options = CreateVTFOptions(
     format=FORMAT.DXT5,
     vtf_flags=[FLAG.ANISOTROPIC, FLAG.TRILINEAR]
 )
-
 create(options)
+
+# Convert VTF to regular image
+options = ExtractVTFOptions(
+    input_path=example_vtf,
+    output_path=example_extract,
+)
+extract(options)
 
