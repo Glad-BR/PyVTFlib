@@ -6,7 +6,7 @@ from typing import Optional, List, Union
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
-from PyVTFLib.enums import (
+from .enums import (
     FORMAT,
     VTF_FLAG,
     PLATFORM,
