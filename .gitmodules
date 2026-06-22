@@ -1,0 +1,3 @@
+[submodule "cpp/MareTF"]
+	path = cpp/MareTF
+	url = https://github.com/Glad-BR/MareTF.git
