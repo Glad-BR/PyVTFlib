@@ -20,7 +20,7 @@ from .enums import (
 @dataclass
 class NormalMapOptions:
     INVERT_GREEN: bool = False #Invert Green Channel needs to be set if the normalmap is in OpenGL format, ie Blender
-    BUMPSCALE: float = 1 # Range 0 to 1
+    BUMPSCALE: float = False # Range 0 to 1
 
 @dataclass
 class ResizeOptions:
@@ -87,7 +87,7 @@ class CreateVTFOptions:
 
         if self.compression_level:          cmd.extend(['--compression-level', str(self.compression_level)])
         if self.compression_method:         cmd.extend(['--compression-method', self.compression_method.name])
-        if self.version != VERSION.DEFAULT: cmd.extend(['--version', self.version.value])
+        if self.version:                    cmd.extend(['--version', self.version.value])
         if self.disable_mips:               cmd.extend(['disable_mips'])
         if self.filter:                     cmd.extend(['--filter', self.filter.name])
 
