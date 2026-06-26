@@ -71,6 +71,8 @@ class CreateVTFOptions:
 
         if self.vtf_flags:
             for flag in self.vtf_flags: cmd.extend(['--flag', flag.name])
+        else:
+            self.vtf_flags = []
 
         if self.resize:
             if self.resize.WIDTH:   cmd.extend(['--width', str(self.resize.WIDTH)])
