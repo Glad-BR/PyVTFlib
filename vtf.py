@@ -53,14 +53,14 @@ class CreateVTFOptions:
         if isinstance(self.output_path, str):
             self.output_path = Path(self.output_path)
 
-        self.input_path = self.input_path.resolve()
-        self.output_path = self.output_path.resolve() if self.output_path else None
+        if self.input_path:
+            self.input_path = self.input_path.resolve()
+        if self.output_path:
+            self.output_path = self.output_path.resolve()
 
         if not self.input_path.exists():
             raise FileNotFoundError(f"Input file not found: {self.input_path}")
-
-        self.output_path.parent.mkdir(parents=True, exist_ok=True)
-    
+        
     def get_cmd(self):
         cmd = ['create']
         cmd.extend(['--input', str(self.input_path)])
@@ -94,8 +94,6 @@ class CreateVTFOptions:
         return cmd
 
 
-
-
 @dataclass
 class ExtractVTFOptions:
     #Required
@@ -122,7 +120,7 @@ class ExtractVTFOptions:
     def get_cmd(self):
         cmd = ['extract']
         cmd.extend(['--input', str(self.input_path)])
-
+        
         if self.output_path:           cmd.extend(['--output', str(self.output_path)])
         if self.skip_image:            cmd.extend(['--extract-skip-image'])
         if self.file_format:           cmd.extend(['--extract-file-format', self.file_format.name])
@@ -135,9 +133,8 @@ class ExtractVTFOptions:
         if self.extract_all_images:    cmd.extend(['--extract-all-images'])
         if self.extract_all_resources: cmd.extend(['--extract-all-resources'])
         return cmd
-
-
     
+
 class VTF:
     def __init__(self, bin_path: Optional[Path] = None):
         self.base_dir = Path(__file__).resolve().parent
@@ -151,17 +148,20 @@ class VTF:
         elif os.name == "posix":
             bin_path = self.bin_path / "linux64" / self.bin_name
         else:
-            raise OSError(f"Unsupported OS: {os.name}")
+            raise OSError(f"Unsupported OS: {os.name}\t:(")
         
         if not bin_path.exists():
             raise FileNotFoundError(f"Binary not found: {bin_path}")
         
         return bin_path.resolve()
     
-    def _run(self, args) -> subprocess.CompletedProcess:
-        cmd = [str(self.bin)] + args
+    def _run(self, options: CreateVTFOptions) -> subprocess.CompletedProcess:
+        cmd = [str(self.bin)] + options.get_cmd()
         print(f"Running: {' '.join(cmd)}")
         
+        if options.output_path:
+            options.output_path.parent.mkdir(parents=True, exist_ok=True)
+
         result = subprocess.run(cmd, capture_output=True, text=True, check=False)
         
         if result.returncode != 0:
@@ -171,11 +171,11 @@ class VTF:
             print(f"Success: {result.stdout}")
         
         return result
-    
+
 
 vtf = VTF()
 def create(options: CreateVTFOptions) -> subprocess.CompletedProcess:
-    return vtf._run(args=options.get_cmd())
+    return vtf._run(options)
 
 def extract(options: ExtractVTFOptions) -> subprocess.CompletedProcess:
-    return vtf._run(args=options.get_cmd())
+    return vtf._run(options)
