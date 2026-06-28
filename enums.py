@@ -178,8 +178,8 @@ class COMPRESSION_METHOD(Enum):
 #    CONVERT = auto()  # Alias for CREATE
 
 class VERSION(Enum):
-    DEFAULT = "7.2" #Default Version
     V7_2 = "7.2"
+    V7_3 = "7.3"
     V7_4 = "7.4"
     V7_5 = "7.5"
     V7_6 = "7.6"

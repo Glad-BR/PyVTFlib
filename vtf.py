@@ -27,7 +27,7 @@ class ResizeOptions:
     WIDTH: int
     HEIGHT: int
     #Range 0 to 1
-    quality: float = -1 #Default
+    quality: float = None #Default
     method: RESIZE_METHOD = None
 
 @dataclass
@@ -43,7 +43,7 @@ class CreateVTFOptions:
     normal: NormalMapOptions = None
     compression_level: float = None #Range 0 to 1, default -1 for default compression level
     compression_method: COMPRESSION_METHOD = None
-    version: VERSION = VERSION.DEFAULT
+    version: VERSION = VERSION.V7_2 # Most Compatible
     platform: PLATFORM = None
     disable_mips: bool = False
 
@@ -155,27 +155,31 @@ class VTF:
         
         return bin_path.resolve()
     
-    def _run(self, options: CreateVTFOptions) -> subprocess.CompletedProcess:
+    def _run(self, options: CreateVTFOptions) -> tuple(subprocess.CompletedProcess,Path):
         cmd = [str(self.bin)] + options.get_cmd()
         print(f"Running: {' '.join(cmd)}")
         
         if options.output_path:
             options.output_path.parent.mkdir(parents=True, exist_ok=True)
 
+        if not options.output_path.suffix:
+            print(f'!!! WARNING !!! Missing file suffix')
+
         result = subprocess.run(cmd, capture_output=True, text=True, check=False)
         
         if result.returncode != 0:
-            print(f"Error: {result.stderr}")
+            print(f"Returncode: {result.returncode} Error: {result.stderr}")
             raise Exception(result.stderr)
+        elif options.output_path.exists():
+            print(f"Sucessfully created VTF file: {options.output_path}")
+            return (result, options.output_path)
         else:
-            print(f"Success: {result.stdout}")
-        
-        return result
+            raise Exception(f'Unknown Error: {result.stderr}')
 
 
 vtf = VTF()
-def create(options: CreateVTFOptions) -> subprocess.CompletedProcess:
+def create(options: CreateVTFOptions) -> tuple(subprocess.CompletedProcess,Path):
     return vtf._run(options)
 
-def extract(options: ExtractVTFOptions) -> subprocess.CompletedProcess:
+def extract(options: ExtractVTFOptions) -> tuple(subprocess.CompletedProcess,Path):
     return vtf._run(options)
